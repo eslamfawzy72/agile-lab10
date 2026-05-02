@@ -1,24 +1,24 @@
-name: Action Basics Demo
+name: Run Automated Tests
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Echo String
-        run: echo "Welcome to GitHub Actions!"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' # Input passed to the action
+          python-version: '3.10'
 
-      - name: Run Python Commands
+      - name: Install dependencies
         run: |
-          echo "---"
-          python --version
-          python -c "print('Hello from Python in GitHub Actions!')"
-          python -c "for i in range(3): print(f'Counting {i+1}')"
-          echo "---"
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run pytest
+        run: pytest -v scripts/test_math_utils.py
